@@ -84,6 +84,10 @@ window.CMBAP = window.CMBAP || {};
 
 	// Move Post to Attached column.
 	app.moveRowToAttached = function( $li ) {
+		if (app.attached_number > -1 && $(".attached li").length >= app.attached_number) {
+			alert("Maximum attached allowed: " + app.attached_number);
+			return;
+		}
 		var itemID = $li.data( 'id' );
 		var $wrap  = $li.parents( '.attached-posts-wrap' );
 
