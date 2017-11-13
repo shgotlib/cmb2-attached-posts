@@ -13,6 +13,11 @@ class WDS_CMB2_Attached_Posts_Field {
 	 * @var WDS_CMB2_Attached_Posts_Field
 	 */
 	protected static $single_instance = null;
+	
+	/**
+	 * Max attached post allowed
+	 */
+	protected static $number_allowed = -1;
 
 	/**
 	 * CMB2_Field object
@@ -58,7 +63,6 @@ class WDS_CMB2_Attached_Posts_Field {
 	 * attached to a single page
 	 */
 	public function render( $field, $escaped_value, $object_id, $object_type, $field_type ) {
-		self::setup_scripts();
 		$this->field = $field;
 		$this->do_type_label = false;
 
@@ -81,6 +85,7 @@ class WDS_CMB2_Attached_Posts_Field {
 			$args = wp_parse_args( $query_args, array(
 				'post_type'      => 'post',
 				'posts_per_page' => 100,
+				'number_allowed' => -1,
 			) );
 
 			if ( isset( $_POST['post'] ) ) {
@@ -114,6 +119,7 @@ class WDS_CMB2_Attached_Posts_Field {
 			// Setup our args
 			$args = wp_parse_args( $query_args, array(
 				'number' => 100,
+				'number_allowed' => -1,
 			) );
 			$post_type_labels = $field_type->_text( 'users_text', esc_html__( 'Users' ) );
 		}
@@ -205,6 +211,7 @@ class WDS_CMB2_Attached_Posts_Field {
 
 		// Display our description if one exists
 		$field_type->_desc( true, true );
+		self::setup_scripts();
 	}
 
 	/**
@@ -486,6 +493,7 @@ class WDS_CMB2_Attached_Posts_Field {
 
 		if ( ! $once ) {
 			wp_localize_script( 'cmb2-attached-posts-field', 'CMBAP', array(
+				'attached_number'    => self::$number_allowed,
 				'edit_link_template' => str_replace( get_the_ID(), 'REPLACEME', get_edit_post_link( get_the_ID() ) ),
 				'ajaxurl'            => admin_url( 'admin-ajax.php', 'relative' ),
 			) );
